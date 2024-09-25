@@ -85,12 +85,8 @@ class Etape(models.Model):
 
 
 # 产品模型 (Produit)
-class Produit(models.Model):
-    nom = models.CharField(max_length=100)
+class Produit(Objet):
     premiere_etape = models.ForeignKey(Etape, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.nom
 
 
 # 库存模型 (Stock)
