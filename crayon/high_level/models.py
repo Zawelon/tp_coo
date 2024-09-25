@@ -49,7 +49,6 @@ class Objet(models.Model):
 
 # 工厂模型 (Usine)
 class Usine(models.Model):
-    nom = models.CharField(max_length=100)
     machines = models.ManyToManyField(Machine)
 
     def __str__(self):
