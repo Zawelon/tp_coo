@@ -48,7 +48,7 @@ class Objet(models.Model):
 
 
 # 工厂模型 (Usine)
-class Usine(models.Model):
+class Usine(Local):
     machines = models.ManyToManyField(Machine)
 
 
