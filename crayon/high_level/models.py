@@ -38,6 +38,11 @@ class Machine(models.Model):
         return self.nom
 
 
+# 工厂模型 (Usine)
+class Usine(Local):
+    machines = models.ManyToManyField(Machine)
+
+
 # 资源模型 (Class Objet)
 class Objet(models.Model):
     nom = models.CharField(max_length=100)
@@ -45,11 +50,6 @@ class Objet(models.Model):
 
     def __str__(self):
         return self.nom
-
-
-# 工厂模型 (Usine)
-class Usine(Local):
-    machines = models.ManyToManyField(Machine)
 
 
 # 资源模型 (Ressource)
