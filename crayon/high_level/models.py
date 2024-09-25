@@ -51,9 +51,6 @@ class Objet(models.Model):
 class Usine(models.Model):
     machines = models.ManyToManyField(Machine)
 
-    def __str__(self):
-        return self.nom
-
 
 # 资源模型 (Ressource)
 class Ressource(Objet):
