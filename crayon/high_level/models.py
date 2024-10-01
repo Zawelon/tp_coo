@@ -42,21 +42,13 @@ class Machine(models.Model):
 # 工厂模型 (Usine)
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
+
     def costs(self):
-        # 计算工厂的面积成本
         area_cost = self.surface * self.ville.prix_par_m2
-
-        # 计算所有机器的成本
         machines_cost = sum(machine.costs() for machine in self.machines.all())
-
-        # 计算库存中的资源成本
-        stock_cost = sum(stock.objet.prix * stock.nombre for stock in self.stock_set.all())
-
-        # 返回总成本
+        stock_cost = sum(stock.costs() for stock in self.stock_set.all())
         return area_cost + machines_cost + stock_cost
 
-    def __str__(self):
-        return self.nom
 
 # 资源模型 (Class Objet)
 class Objet(models.Model):
@@ -114,5 +106,6 @@ class Stock(models.Model):
     nombre = models.IntegerField()
     usine = models.ForeignKey(Usine, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"{self.nombre} {self.objet.nom}"
+    def costs(self):
+        # 计算库存资源的成本
+        return self.objet.prix * self.nombre
