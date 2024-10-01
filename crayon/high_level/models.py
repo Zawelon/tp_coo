@@ -33,7 +33,8 @@ class Machine(models.Model):
     nom = models.CharField(max_length=100)
     prix = models.DecimalField(max_digits=10, decimal_places=2)
     n_serie = models.CharField(max_length=100)
-
+    def costs(self):
+        return self.prix
     def __str__(self):
         return self.nom
 
@@ -41,7 +42,21 @@ class Machine(models.Model):
 # 工厂模型 (Usine)
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
+    def costs(self):
+        # 计算工厂的面积成本
+        area_cost = self.surface * self.ville.prix_par_m2
 
+        # 计算所有机器的成本
+        machines_cost = sum(machine.costs() for machine in self.machines.all())
+
+        # 计算库存中的资源成本
+        stock_cost = sum(stock.objet.prix * stock.nombre for stock in self.stock_set.all())
+
+        # 返回总成本
+        return area_cost + machines_cost + stock_cost
+
+    def __str__(self):
+        return self.nom
 
 # 资源模型 (Class Objet)
 class Objet(models.Model):
@@ -61,6 +76,10 @@ class Ressource(Objet):
 class QuantiteRessource(models.Model):
     ressource = models.ForeignKey(Ressource, on_delete=models.CASCADE)
     quantite = models.IntegerField(default=0)
+
+    def costs(self):
+        # 返回资源的价格乘以数量
+        return self.quantite * self.ressource.prix
 
     def __str__(self):
         return f"{self.quantite} de {self.ressource.nom}"
