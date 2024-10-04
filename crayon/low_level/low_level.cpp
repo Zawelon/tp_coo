@@ -1,28 +1,36 @@
-#include "iostream"
+#include <iostream>
+#include <string>
+#include <cpr/cpr>
 
-class Departement() {
-  std::string nom;
-  int code_postal;
-  float pris_par_m2;
+// Classe Ville avec les attributs nom, code_postal, et prix_par_m2
+class Ville {
+    std::string nom;      // Le nom de la ville
+    int code_postal;      // Le code postal de la ville
+    float prix_par_m2;    // Le prix par mètre carré dans la ville
 
-  // Constructeur  sans parametre
-  Departement() {
-    nom = "Non defini";
-    code_postal = 0;
-    pris_par_m2 = 0;
-  }
+public:
+    // Constructeur utilisant une liste d'initialisation
+    Ville(std::string n, int code, float prix) : nom{n}, code_postal{code}, prix_par_m2{prix} {}
 
-  // Constructeur  avec parametres
-  Departement(std::string nom, int code_postal, int pris_par_m2) {
-    this->nom = nom;
-    this->code_postal = code_postal;
-    this->pris_par_m2 = pris_par_m2;
-  }
+    // Fonction amie, surcharge de l'opérateur <<
+    friend std::ostream& operator<<(std::ostream& out, const Ville& ville) {
+        return out << "Nom: " << ville.nom << " | Code postal: " << ville.code_postal
+                   << " | Prix par m²: " << ville.prix_par_m2 << " €";
+    }
+};
 
-  // Methode d'affichage
-  void Affichage() {
-    std::cout << "Le nom du departement est: " << nom << std::endl;
-    std::cout << "Le code postal est: " << code_postal << std::endl;
-    std::cout << "Le le prix par metre carre est: " << pris_par_m2 << std::endl;
-  }
+int main() {
+  
+    // Créer un objet Ville
+    Ville ville("Toulouse", 31000, 3500.5);
+
+    // Utiliser l'opérateur << surchargé pour afficher les informations de l'objet
+    std::cout << ville << std::endl;
+
+
+    cpr:response r = cpr::Get(cpr::Url{"http://local:8000/ville/1"}); 
+    r.status_code;                  // 200
+    r.header["content-type"];       // application/json; charset=utf-8
+    r.text;  
+    return 0;
 }
