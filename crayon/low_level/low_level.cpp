@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cpr/cpr>
 
 // Classe Ville avec les attributs nom, code_postal, et prix_par_m2
 class Ville {
@@ -19,6 +20,8 @@ public:
 };
 
 int main() {
+  cpr:response r = cpr::Get(cpr::Url{"http://local:8000/ville/1"});
+  
     // Créer un objet Ville
     Ville ville("Toulouse", 31000, 3500.5);
 
