@@ -21,7 +21,8 @@ from high_level import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("ville/<int:pk", views.VilleDetailView.as_view(), name="Ville"),
-    # path("election/<int:pk>", views.ElectionDetailView.as_view(), name="election"),
-    # path("candidate/<int:pk>/vote", views.VoteView.as_view(), name="vote"),
+    path("ville/<int:pk>", views.VilleJsonDetailView.as_view(), name="Ville"),
+    path("usine/<int:pk>", views.UsineJsonDetailView.as_view(), name="Usine"),
+    path("Local/<int:pk>", views.LocalJsonDetailView.as_view(), name="Local"),
+    path("machine/<int:pk>", views.MachineJsonDetailView.as_view(), name="Machine"),
 ]
