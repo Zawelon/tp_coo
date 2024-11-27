@@ -58,34 +58,37 @@ class Machine(models.Model):
         return {
             "nom": self.nom,
             "prix": str(self.prix),
-            "n_serie": self.n_serie
+            "nunero de serie": self.n_serie
         }
 
 
+######################CLASS Usine################
 class Usine(Local):
     machines = models.ManyToManyField(Machine)
 
+    def __str__(self):
+        return self.nom
+
+    #Calcul du cout d'une Usine
     def costs(self):
+        area_cost = 0
+        machines_cost = 0
+        stock_cost = 0
+    
+        # Calcul du cout de la surface
         area_cost = self.surface * self.ville.prix_par_m2
-        machines_cost = sum(machine.costs() for machine in self.machines.all())
-        stock_cost = sum(stock.costs() for stock in self.stock_set.all())
+    
+        # Calcul du cout des machines
+        for machine in self.machines.all():
+            machines_cost += machine.costs()
+    
+        # Calcul du cout du stock
+        for stock in self.stock_set.all():
+            stock_cost += stock.costs()
+    
+        # Retourne la somme totale des couts
         return area_cost + machines_cost + stock_cost
-
-    def approvisionnement_automatique(self, produit, quantite):
-        etape = produit.premiere_etape
-        while etape:
-            ressource = etape.quantite_ressource.ressource
-            quantite_needed = etape.quantite_ressource.quantite * quantite
-            quantite_in_stock = sum(stock.nombre for stock in self.stock_set.filter(objet=ressource))
-            if quantite_in_stock < quantite_needed:
-                self.acheter_ressource(ressource, quantite_needed - quantite_in_stock)
-            etape = etape.etape_suivante
-
-    def acheter_ressource(self, ressource, quantite):
-        stock, created = self.stock_set.get_or_create(objet=ressource, defaults={'nombre': 0})
-        stock.nombre += quantite
-        stock.save()
-
+    
     def json(self):
         return {
             "nom": self.nom,
@@ -94,11 +97,34 @@ class Usine(Local):
             "machines": [machine.nom for machine in self.machines.all()],
             "stock": [stock.json() for stock in self.stock_set.all()]
         }
+            
+    #Facultatif        
+    def approvisionnement_automatique(self, produit, quantite):
+        etape = produit.premiere_etape
+        while etape:
+            ressource = etape.quantite_ressource.ressource
+            quantite_needed = etape.quantite_ressource.quantite * quantite
+    
+            # Calcul de la quantite en stock avec une boucle explicite
+            quantite_in_stock = 0
+            for stock in self.stock_set.filter(objet=ressource):
+                quantite_in_stock += stock.nombre
+    
+            # Si la quantite en stock est insuffisante, acheter la ressource manquante
+            if quantite_in_stock < quantite_needed:
+                self.acheter_ressource(ressource, quantite_needed - quantite_in_stock)
+    
+            # Passer a l'etape suivante
+            etape = etape.etape_suivante
+    
+    #Facultatif        
+    def acheter_ressource(self, ressource, quantite):
+        stock, created = self.stock_set.get_or_create(objet=ressource, defaults={'nombre': 0})
+        stock.nombre += quantite
+        stock.save()
 
-    def __str__(self):
-        return self.nom
 
-
+######################CLASS OBJET################
 class Objet(models.Model):
     nom = models.CharField(max_length=100, unique=True)  # Ensure unique names for objects
     prix = models.DecimalField(max_digits=10, decimal_places=2)
@@ -128,6 +154,7 @@ class QuantiteRessource(models.Model):
         return f"{self.quantite} de {self.ressource.nom}"
 
 
+######################CLASS Etape################
 class Etape(models.Model):
     nom = models.CharField(max_length=100)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
@@ -154,6 +181,7 @@ class Etape(models.Model):
         return self.nom
 
 
+######################CLASS Produit################
 class Produit(Objet):
     premiere_etape = models.ForeignKey(Etape, on_delete=models.CASCADE)
 
@@ -164,9 +192,10 @@ class Produit(Objet):
         }
 
 
+######################CLASS Stock################
 class Stock(models.Model):
     objet = models.ForeignKey(Objet, on_delete=models.CASCADE)
-    nombre = models.IntegerField()
+    nombre = models.IntegerField(default=0)
     usine = models.ForeignKey(Usine, on_delete=models.CASCADE)
 
     def costs(self):
