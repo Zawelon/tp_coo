@@ -32,4 +32,3 @@ urlpatterns = [
     path('api/produit/<int:pk>/', views.ProduitApiView.as_view(), name='api_produit'),
     path('api/stock/<int:pk>/', views.StockApiView.as_view(), name='api_stock'),
 ]
-]
