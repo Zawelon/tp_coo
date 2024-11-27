@@ -1,6 +1,6 @@
 from django.db import models
 
-
+######################CLASS Ville################
 class Ville(models.Model):
     nom = models.CharField(max_length=100)
     code_postal = models.IntegerField(default=0)
@@ -17,6 +17,7 @@ class Ville(models.Model):
         }
 
 
+######################CLASS Local################
 class Local(models.Model):
     nom = models.CharField(max_length=100)
     ville = models.ForeignKey(
@@ -34,15 +35,17 @@ class Local(models.Model):
     def json(self):
         return {
             "nom": self.nom,
-            "ville": self.ville.nom,
+            "ville": self.ville.json(),
             "surface": str(self.surface)
         }
 
 
-class SiegeSocial(Local):
+######################CLASS SiegeSocial################
+class (Local):
     pass
 
 
+######################CLASS Machine################
 class Machine(models.Model):
     nom = models.CharField(max_length=100)
     prix = models.DecimalField(max_digits=10, decimal_places=2)
@@ -93,8 +96,8 @@ class Usine(Local):
         return {
             "nom": self.nom,
             "surface": str(self.surface),
-            "ville": self.ville.nom,
-            "machines": [machine.nom for machine in self.machines.all()],
+            "ville": self.ville.json(),
+            "machines": [machine.json() for machine in self.machines.all()],
             "stock": [stock.json() for stock in self.stock_set.all()]
         }
             
@@ -117,32 +120,37 @@ class Usine(Local):
             # Passer a l'etape suivante
             etape = etape.etape_suivante
     
-    #Facultatif        
+    #Facultatif
+    #Mise a jour du stock
     def acheter_ressource(self, ressource, quantite):
         stock, created = self.stock_set.get_or_create(objet=ressource, defaults={'nombre': 0})
         stock.nombre += quantite
-        stock.save()
+        stock.save() #savegarde de modif de stock
 
 
 ######################CLASS OBJET################
 class Objet(models.Model):
-    nom = models.CharField(max_length=100, unique=True)  # Ensure unique names for objects
-    prix = models.DecimalField(max_digits=10, decimal_places=2)
+    nom = models.CharField(max_length=100, unique=True)  # Assurer des noms uniques pour les objets
+    prix = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    
+    def __str__(self):
+        return self.nom
+
+    
     def json(self):
         return {
             "nom": self.nom,
             "prix": str(self.prix)
         }
-    
-    def __str__(self):
-        return self.nom
 
 
+######################CLASS Ressource################
 class Ressource(Objet):
     pass
 
 
+######################CLASS QuantiteRessource##########
 class QuantiteRessource(models.Model):
     ressource = models.ForeignKey(Ressource, on_delete=models.CASCADE)
     quantite = models.IntegerField(default=0)
@@ -153,13 +161,22 @@ class QuantiteRessource(models.Model):
     def __str__(self):
         return f"{self.quantite} de {self.ressource.nom}"
 
+    def json_extended(self):  
+        return {
+            "ressource": {
+                self.ressource.json(),
+                "quantite": self.quantite,
+            }
+        }
+
+
 
 ######################CLASS Etape################
 class Etape(models.Model):
     nom = models.CharField(max_length=100)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     quantite_ressource = models.ForeignKey(QuantiteRessource, on_delete=models.CASCADE)
-    duree = models.IntegerField()
+    duree = models.DurationField(default=timedelta())  # Valeur par défaut = 0 seconde
     etape_suivante = models.ForeignKey(
         "self",
         null=True,
@@ -167,24 +184,28 @@ class Etape(models.Model):
         on_delete=models.SET_NULL,
         related_name="precedente",
     )
+    
+    def __str__(self):
+        return self.nom
 
     def json(self):
         return {
             "nom": self.nom,
-            "machine": self.machine.nom,
+            "machine": self.machine.json(),
             "quantite_ressource": self.quantite_ressource.json(),
             "duree": self.duree,
             "etape_suivante": self.etape_suivante.nom if self.etape_suivante else None
         }
 
-    def __str__(self):
-        return self.nom
 
 
 ######################CLASS Produit################
 class Produit(Objet):
     premiere_etape = models.ForeignKey(Etape, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.nom
+        
     def json(self):
         return {
             "nom": self.nom,
