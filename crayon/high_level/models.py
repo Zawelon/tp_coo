@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import timedelta
+
 
 ######################CLASS Ville################
 class Ville(models.Model):
@@ -8,12 +10,12 @@ class Ville(models.Model):
 
     def __str__(self):
         return self.nom
-    
+
     def json(self):
         return {
             "nom": self.nom,
             "code_postal": self.code_postal,
-            "prix_par_m2": str(self.prix_par_m2)
+            "prix_par_m2": str(self.prix_par_m2),
         }
 
 
@@ -26,22 +28,24 @@ class Local(models.Model):
     )
     surface = models.DecimalField(max_digits=10, decimal_places=2)
 
+    """
     class Meta:
-        abstract = True
+        abstract = True #Pour definir une class abstraite
+    """
 
     def __str__(self):
         return self.nom
-     
+
     def json(self):
         return {
             "nom": self.nom,
             "ville": self.ville.json(),
-            "surface": str(self.surface)
+            "surface": str(self.surface),
         }
 
 
 ######################CLASS SiegeSocial################
-class (Local):
+class SiegeSocial(Local):
     pass
 
 
@@ -53,15 +57,15 @@ class Machine(models.Model):
 
     def costs(self):
         return self.prix
-    
+
     def __str__(self):
         return self.nom
-    
+
     def json(self):
         return {
             "nom": self.nom,
             "prix": str(self.prix),
-            "nunero de serie": self.n_serie
+            "nunero de serie": self.n_serie,
         }
 
 
@@ -72,77 +76,76 @@ class Usine(Local):
     def __str__(self):
         return self.nom
 
-    #Calcul du cout d'une Usine
+    # Calcul du cout d'une Usine
     def costs(self):
         area_cost = 0
         machines_cost = 0
         stock_cost = 0
-    
+
         # Calcul du cout de la surface
         area_cost = self.surface * self.ville.prix_par_m2
-    
+
         # Calcul du cout des machines
         for machine in self.machines.all():
             machines_cost += machine.costs()
-    
+
         # Calcul du cout du stock
         for stock in self.stock_set.all():
             stock_cost += stock.costs()
-    
+
         # Retourne la somme totale des couts
         return area_cost + machines_cost + stock_cost
-    
+
     def json(self):
         return {
             "nom": self.nom,
             "surface": str(self.surface),
             "ville": self.ville.json(),
             "machines": [machine.json() for machine in self.machines.all()],
-            "stock": [stock.json() for stock in self.stock_set.all()]
+            "stock": [stock.json() for stock in self.stock_set.all()],
         }
-            
-    #Facultatif        
+
+    # Facultatif
     def approvisionnement_automatique(self, produit, quantite):
         etape = produit.premiere_etape
         while etape:
             ressource = etape.quantite_ressource.ressource
             quantite_needed = etape.quantite_ressource.quantite * quantite
-    
+
             # Calcul de la quantite en stock avec une boucle explicite
             quantite_in_stock = 0
             for stock in self.stock_set.filter(objet=ressource):
                 quantite_in_stock += stock.nombre
-    
+
             # Si la quantite en stock est insuffisante, acheter la ressource manquante
             if quantite_in_stock < quantite_needed:
                 self.acheter_ressource(ressource, quantite_needed - quantite_in_stock)
-    
+
             # Passer a l'etape suivante
             etape = etape.etape_suivante
-    
-    #Facultatif
-    #Mise a jour du stock
+
+    # Facultatif
+    # Mise a jour du stock
     def acheter_ressource(self, ressource, quantite):
-        stock, created = self.stock_set.get_or_create(objet=ressource, defaults={'nombre': 0})
+        stock, created = self.stock_set.get_or_create(
+            objet=ressource, defaults={"nombre": 0}
+        )
         stock.nombre += quantite
-        stock.save() #savegarde de modif de stock
+        stock.save()  # savegarde de modif de stock
 
 
 ######################CLASS OBJET################
 class Objet(models.Model):
-    nom = models.CharField(max_length=100, unique=True)  # Assurer des noms uniques pour les objets
+    nom = models.CharField(
+        max_length=100, unique=True
+    )  # Assurer des noms uniques pour les objets
     prix = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    
     def __str__(self):
         return self.nom
 
-    
     def json(self):
-        return {
-            "nom": self.nom,
-            "prix": str(self.prix)
-        }
+        return {"nom": self.nom, "prix": str(self.prix)}
 
 
 ######################CLASS Ressource################
@@ -161,14 +164,11 @@ class QuantiteRessource(models.Model):
     def __str__(self):
         return f"{self.quantite} de {self.ressource.nom}"
 
-    def json_extended(self):  
+    def json_extended(self):
         return {
-            "ressource": {
-                self.ressource.json(),
-                "quantite": self.quantite,
-            }
+            "ressource": self.ressource.json(),
+            "quantite": self.quantite,
         }
-
 
 
 ######################CLASS Etape################
@@ -184,7 +184,7 @@ class Etape(models.Model):
         on_delete=models.SET_NULL,
         related_name="precedente",
     )
-    
+
     def __str__(self):
         return self.nom
 
@@ -194,9 +194,8 @@ class Etape(models.Model):
             "machine": self.machine.json(),
             "quantite_ressource": self.quantite_ressource.json(),
             "duree": self.duree,
-            "etape_suivante": self.etape_suivante.nom if self.etape_suivante else None
+            "etape_suivante": self.etape_suivante.nom if self.etape_suivante else None,
         }
-
 
 
 ######################CLASS Produit################
@@ -205,12 +204,9 @@ class Produit(Objet):
 
     def __str__(self):
         return self.nom
-        
+
     def json(self):
-        return {
-            "nom": self.nom,
-            "premiere_etape": self.premiere_etape.nom
-        }
+        return {"nom": self.nom, "premiere_etape": self.premiere_etape.nom}
 
 
 ######################CLASS Stock################
@@ -223,7 +219,4 @@ class Stock(models.Model):
         return self.objet.prix * self.nombre
 
     def json(self):
-        return {
-            "objet": self.objet.nom,
-            "nombre": self.nombre
-        }
+        return {"objet": self.objet.nom, "nombre": self.nombre}
