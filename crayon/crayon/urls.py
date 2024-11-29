@@ -49,6 +49,7 @@ urlpatterns = [
     path(
         "stock/<int:pk>/json/", views.StockJsonDetailView.as_view(), name="stock_json"
     ),
+    """
     # Extended JSON views for models and their relations (for C++ requirements)
     path("api/ville/<int:pk>/", views.VilleApiView.as_view(), name="api_ville"),
     path("api/local/<int:pk>/", views.LocalApiView.as_view(), name="api_local"),
@@ -73,4 +74,5 @@ urlpatterns = [
     path("api/etape/<int:pk>/", views.EtapeApiView.as_view(), name="api_etape"),
     path("api/produit/<int:pk>/", views.ProduitApiView.as_view(), name="api_produit"),
     path("api/stock/<int:pk>/", views.StockApiView.as_view(), name="api_stock"),
+    """,
 ]
