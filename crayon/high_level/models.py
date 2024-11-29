@@ -11,7 +11,7 @@ class Ville(models.Model):
     def __str__(self):
         return self.nom
 
-    def json(self):
+    def json_extended(self):
         return {
             "nom": self.nom,
             "code_postal": self.code_postal,
@@ -28,20 +28,20 @@ class Local(models.Model):
     )
     surface = models.DecimalField(max_digits=10, decimal_places=2)
 
-    """
-    class Meta:
-        abstract = True #Pour definir une class abstraite
-    """
-
     def __str__(self):
         return self.nom
 
     def json(self):
         return {
             "nom": self.nom,
-            "ville": self.ville.json(),
+            "ville": self.ville.json_extended(),
             "surface": str(self.surface),
         }
+
+    """
+    class Meta:
+        abstract = True #Pour definir une class abstraite
+    """
 
 
 ######################CLASS SiegeSocial################
@@ -61,7 +61,7 @@ class Machine(models.Model):
     def __str__(self):
         return self.nom
 
-    def json(self):
+    def json_extended(self):
         return {
             "nom": self.nom,
             "prix": str(self.prix),
@@ -96,21 +96,21 @@ class Usine(Local):
         # Retourne la somme totale des couts
         return area_cost + machines_cost + stock_cost
 
-    def json(self):
+    def json_extended(self):
         return {
             "nom": self.nom,
             "surface": str(self.surface),
-            "ville": self.ville.json(),
-            "machines": [machine.json() for machine in self.machines.all()],
-            "stock": [stock.json() for stock in self.stock_set.all()],
+            "ville": self.ville.json_extended(),
+            "machines": [machine.json_extended() for machine in self.machines.all()],
+            "stock": [stock.json_extended() for stock in self.stock_set.all()],
         }
 
     # Facultatif
     def approvisionnement_automatique(self, produit, quantite):
         etape = produit.premiere_etape
         while etape:
-            ressource = etape.quantite_ressource.ressource
-            quantite_needed = etape.quantite_ressource.quantite * quantite
+            ressource = etape.my_quantite_ressource.ressource
+            quantite_needed = etape.my_quantite_ressource.quantite * quantite
 
             # Calcul de la quantite en stock avec une boucle explicite
             quantite_in_stock = 0
@@ -145,7 +145,7 @@ class Objet(models.Model):
         return self.nom
 
     def json(self):
-        return {"nom": self.nom, "prix": str(self.prix)}
+        return {"nom": self.nom, "prix": str(self.prix)}  # GG
 
 
 ######################CLASS Ressource################
@@ -175,7 +175,9 @@ class QuantiteRessource(models.Model):
 class Etape(models.Model):
     nom = models.CharField(max_length=100)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    quantite_ressource = models.ForeignKey(QuantiteRessource, on_delete=models.CASCADE)
+    my_quantite_ressource = models.ForeignKey(
+        QuantiteRessource, on_delete=models.CASCADE
+    )
     duree = models.DurationField(default=timedelta())  # Valeur par défaut = 0 seconde
     etape_suivante = models.ForeignKey(
         "self",
@@ -188,11 +190,11 @@ class Etape(models.Model):
     def __str__(self):
         return self.nom
 
-    def json(self):
+    def json_extended(self):
         return {
             "nom": self.nom,
-            "machine": self.machine.json(),
-            "quantite_ressource": self.quantite_ressource.json(),
+            "machine": self.machine.json_extended(),
+            "my_quantite_ressource": self.my_quantite_ressource.json_extended(),
             "duree": self.duree,
             "etape_suivante": self.etape_suivante.nom if self.etape_suivante else None,
         }
@@ -205,7 +207,7 @@ class Produit(Objet):
     def __str__(self):
         return self.nom
 
-    def json(self):
+    def json_extended(self):
         return {"nom": self.nom, "premiere_etape": self.premiere_etape.nom}
 
 
@@ -213,10 +215,12 @@ class Produit(Objet):
 class Stock(models.Model):
     objet = models.ForeignKey(Objet, on_delete=models.CASCADE)
     nombre = models.IntegerField(default=0)
-    usine = models.ForeignKey(Usine, on_delete=models.CASCADE)
+    usine = models.ForeignKey(
+        Usine, on_delete=models.CASCADE
+    )  # Un stock est dans une Usine
 
     def costs(self):
         return self.objet.prix * self.nombre
 
-    def json(self):
+    def json_extended(self):
         return {"objet": self.objet.nom, "nombre": self.nombre}
