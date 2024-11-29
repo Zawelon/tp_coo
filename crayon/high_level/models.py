@@ -38,10 +38,8 @@ class Local(models.Model):
             "surface": str(self.surface),
         }
 
-    """
-    class Meta:
-        abstract = True #Pour definir une class abstraite
-    """
+    #class Meta:
+    #    abstract = True #Pour definir une class abstraite
 
 
 ######################CLASS SiegeSocial################
