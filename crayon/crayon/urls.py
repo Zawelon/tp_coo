@@ -8,6 +8,7 @@ urlpatterns = [
     # JSON views for individual models
     path("Ville/<int:pk>", views.VilleJsonDetailView.as_view(), name="Ville"),
     path("Usine/<int:pk>", views.UsineJsonDetailView.as_view(), name="Usine"),
+    path("api/<int:pk>", views.UsineApiView.as_view(), name="Usine-Api"),
     path(
         "Produit/<int:pk>",
         views.ProduitJsonDetailView.as_view(),
