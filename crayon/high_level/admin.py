@@ -1,4 +1,4 @@
-# election/admin.py
+# Crayon/high_level/admin.py
 from django.contrib import admin
 from . import models
 
@@ -11,3 +11,5 @@ admin.site.register(models.QuantiteRessource)
 admin.site.register(models.Stock)
 admin.site.register(models.Produit)
 admin.site.register(models.Usine)
+admin.site.register(models.Local)
+admin.site.register(models.Objet)
