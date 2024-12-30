@@ -1,84 +1,104 @@
-# Projet de Fabrication de Crayons
+# Projet de CONCEPTION DES SYSTÈMES ORIENTÉE OBJET ET SYSTÈMES TEMP REEL 
+### Titre: Conception d'une application de gestion d'une usine de fabrication de crayons
 
-_Auteur 1_ : GOUMOU GONO  
-_Auteur 2_ : GAO JINGQI  
-_Date_ : 08/1/2024
+---
+### Auteurs
 
-Ce projet vise à simuler la gestion d'une chaîne de production pour des usines en utilisant Django pour la partie serveur et C++ pour la partie client.
+- [GOUMOU GONO](https://www.linkedin.com/in/gono-goumou-506a2b14b)
+- [GAO JINGQI](https://www.linkedin.com/in/gono-goumou-506a2b14b)
+
+
+**Encadrant** : [Guilhem Saurel](https://www.linkedin.com/in/nim65s/)
+#### Formation: [Master EEA-ISTR](https://eea.univ-tlse3.fr/ingenierie-des-systemes-temps-reel)
+#### Année universitaire : 2024-2025
+---
+## Description
+Ce projet vise à simuler la gestion des usines de production de crayon en utilisant Django pour la partie serveur et C++ pour la partie client.
 
 ---
 
-## 1. Installation et Démarrage
+## Dépendances du Projet
 
-### 1.0 - Prérequis
-Avant de commencer, assurez-vous que les éléments suivants sont installés :
-- **Python 3.10 ou plus récent**
-- **pip** (gestionnaire de paquets Python)
-- **Git**
-- **Venv** (environnement virtuel Python)
-- **CMake** (version 3.14 ou plus récente)
-- **Compilateur C++** compatible avec C++17
+Voici les dépendances nécessaires pour faire fonctionner ce projet :
 
-### 1.1 - Cloner le Dépôt
+- ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+- ![pip](https://img.shields.io/badge/pip-OK-green)
+- ![Git](https://img.shields.io/badge/Git-OK-blue)
+- ![Venv](https://img.shields.io/badge/Venv-Required-orange)
+- ![CMake](https://img.shields.io/badge/CMake-3.14%2B-orange)
+- ![C++ Compiler](https://img.shields.io/badge/C%2B%2B_Compiler-C%2B%2B17%2B-red)
+---
+
+## Guide détaillé pour l'installation et le lancement
+#### Cloner le Dépôt
 Clonez le dépôt Git sur votre machine locale :
 ```bash
 git clone https://github.com/Zawelon/tp_coo.git
+```
 
-### 1.2 - Se Placer dans le Dossier
+#### Se Placer dans le Dossier
 Positionnez-vous dans le répertoire du projet :
 ```bash
 cd tp_coo
+```
 
-## 2. Configuration de l'Environnement Python
+### Configuration de l'Environnement Python
 
-### 2.1 - Créer un Environnement Virtuel
+#### Créer un Environnement Virtuel
 Créez un environnement virtuel pour isoler les dépendances :
 ```bash
 python3 -m venv env
 echo env >> .gitignore
+```
 
-### Activez l'environnement virtuel selon votre système :
-#### Linux/MacOS :
+#### Activez l'environnement virtuel selon votre système :
+##### Linux/MacOS :
 ```bash
 source env/bin/activate
+```
 
-#### Windows :
+##### Windows :
 ```bash
 env\Scripts\activate
+```
 
-### 2.2 - Installer les Dépendances Python
+#### Installer les Dépendances Python
 Mettez à jour pip et installez les bibliothèques nécessaires :
 ```bash
 pip install -U pip
 pip install django
+```
 
-### 3. Lancer le Serveur Django
+#### Lancer le Serveur Django
 
-#### 3.1 - Préparer la Base de Données
+##### Préparer la Base de Données
 Générez et appliquez les migrations :
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+```
 
-#### 3.2 - Créer un Super Utilisateur
+##### Créer un Super Utilisateur
 Créez un utilisateur administrateur pour accéder au panneau d'administration Django :
 ```bash
 python manage.py createsuperuser
+```
 
-#### 3.3 - Lancer le Serveur
+##### Lancer le Serveur
 Démarrez le serveur local :
 ```bash
 python manage.py runserver
+```
 
-### Accédez à l'interface administrateur
+#### Accédez à l'interface administrateur
 Accédez à l'interface administrateur à l'adresse suivante :  
 [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 ---
 
-## 4. Configuration et Compilation C++
+### Configuration et Compilation C++
 
-### 4.1 - Installation des Bibliothèques C++
+#### Installation des Bibliothèques C++
 Le projet utilise les bibliothèques suivantes :
 - `nlohmann/json` pour la gestion des données JSON
 - `cpr` pour les requêtes HTTP
@@ -86,22 +106,26 @@ Le projet utilise les bibliothèques suivantes :
 
 Ces bibliothèques sont gérées automatiquement par CMake via `FetchContent`.
 
-### 4.2 - Préparer la Compilation
+#### Préparer la Compilation
 Configurez le projet avec CMake dans un dossier `build` dédié :
 ```bash
 cmake -B build -S .
+```
 
-### 4.3 - Compiler le Projet
+#### Compiler le Projet
 Compilez le programme :
 ```bash
 cmake --build build
+```
 
-### 4.4 - Exécuter le Programme
+#### Exécuter le Programme
 Lancez le programme compilé :
 ```bash
 ./build/low_level
+```
 
-## 5. Fonctionnalités Principales
+---
+### Fonctionnalités Principales
 
 - **API Django** :
   - Modèles définis pour `Ville`, `Usine`, `Machine`, `Produit`, et bien plus.
@@ -113,7 +137,7 @@ Lancez le programme compilé :
 
 ---
 
-## 6. Dépendances Techniques
+### Dépendances Techniques
 
 - **Python** : Django pour la gestion du backend.
 - **C++** :
@@ -123,8 +147,8 @@ Lancez le programme compilé :
 
 ---
 
-## 7. Améliorations Futures
+### Améliorations Futures
 
 - Support pour des bases de données avancées comme PostgreSQL.
 - Ajout de tests unitaires automatisés pour les deux parties.
-- Optimisation des appels API et gestion des erreurs dans le client C++.
+- Optimisation des appels API et gestion des erreurs dans le fichier client C++.
