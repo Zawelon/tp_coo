@@ -22,14 +22,15 @@ Ce projet vise à simuler la gestion des usines de production de crayon en utili
 Voici les dépendances nécessaires pour faire fonctionner ce projet :
 
 - ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-- ![pip](https://img.shields.io/badge/pip-OK-green)
-- ![Git](https://img.shields.io/badge/Git-OK-blue)
-- ![Venv](https://img.shields.io/badge/Venv-Required-orange)
-- ![CMake](https://img.shields.io/badge/CMake-3.14%2B-orange)
-- ![C++ Compiler](https://img.shields.io/badge/C%2B%2B_Compiler-C%2B%2B17%2B-red)
+- ![pip](https://img.shields.io/badge/pip-Gestionnaire_de_paquets_Python-orange)
+- ![Git](https://img.shields.io/badge/Git-Github-purple)
+- ![Venv](https://img.shields.io/badge/Venv-Environnement_virtuel_Python-red)
+- ![CMake](https://img.shields.io/badge/CMake-3.14%2B-yellow)
+- ![C++ Compiler](https://img.shields.io/badge/C%2B%2B_Compiler-C%2B%2B17%2B-green)
 ---
 
 ## Guide détaillé pour l'installation et le lancement
+### Téléchargement du projet 
 #### Cloner le Dépôt
 Clonez le dépôt Git sur votre machine locale :
 ```bash
@@ -41,6 +42,7 @@ Positionnez-vous dans le répertoire du projet :
 ```bash
 cd tp_coo
 ```
+---
 
 ### Configuration de l'Environnement Python
 
@@ -125,7 +127,7 @@ Lancez le programme compilé :
 ```
 
 ---
-### Fonctionnalités Principales
+## Fonctionnalités Principales
 
 - **API Django** :
   - Modèles définis pour `Ville`, `Usine`, `Machine`, `Produit`, et bien plus.
@@ -137,7 +139,7 @@ Lancez le programme compilé :
 
 ---
 
-### Dépendances Techniques
+## Dépendances Techniques
 
 - **Python** : Django pour la gestion du backend.
 - **C++** :
