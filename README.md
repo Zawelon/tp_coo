@@ -100,6 +100,17 @@ python manage.py runserver
 Accédez à l'interface administrateur à l'adresse suivante :  
 [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
+##### Résultat :
+![image](https://github.com/user-attachments/assets/2bd20a66-8486-4b83-8a2d-f974ead76422)
+
+###### Connexion :
+Saisissez le **nom d'utilisateur et le mot de passe** <br>
+Puis, cliquez sur **Log in** afin d'accéder à la page d'accueil:
+
+![image](https://github.com/user-attachments/assets/23e41f7b-6e45-4c47-ba33-0781ffc6752d)
+<br>
+Vous pouvez maintenant ajouter des **Ville, Usine, Produit, SiegeSocial, Machine, Objet, Stock, Etape, QuantiteRessource, Ressource**
+
 ---
 
 ### Configuration et Compilation C++
