@@ -6,7 +6,7 @@ from .models import (
     Ville,
     Usine,
     Produit,
-    Local,
+    #Local,
     SiegeSocial,
     Machine,
     Objet,
@@ -53,7 +53,7 @@ class ProduitJsonDetailView(DetailView):
     ) -> HTTPR:
         return JsonResponse(self.object.json())
 
-
+"""
 class LocalJsonDetailView(DetailView):
     model = Local
 
@@ -61,6 +61,7 @@ class LocalJsonDetailView(DetailView):
         self, context: dict[str, Any], **response_kwargs: Any
     ) -> HTTPR:
         return JsonResponse(self.object.json())
+"""
 
 
 class SiegeSocialJsonDetailView(DetailView):

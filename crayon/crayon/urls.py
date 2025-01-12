@@ -14,12 +14,6 @@ urlpatterns = [
         views.ProduitJsonDetailView.as_view(),
         name="Produit",
     ),
-    path("Local/<int:pk>", views.LocalJsonDetailView.as_view(), name="Local"),
-    path(
-        "Machine/<int:pk>",
-        views.MachineJsonDetailView.as_view(),
-        name="Machine",
-    ),
     path("Objet/<int:pk>", views.ObjetJsonDetailView.as_view(), name="Objet"),
     path(
         "SiegeSocial/<int:pk>",
