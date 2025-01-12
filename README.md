@@ -72,7 +72,11 @@ pip install django
 ```
 
 #### Lancer le Serveur Django
-
+##### Se Placer dans le Dossier crayon
+Positionnez-vous dans le répertoire du projet :
+```bash
+cd crayon
+```
 ##### Préparer la Base de Données
 Générez et appliquez les migrations :
 ```bash
