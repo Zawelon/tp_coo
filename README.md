@@ -61,7 +61,8 @@ source env/bin/activate
 
 ##### Windows :
 ```bash
-env\Scripts\activate
+source env/Scripts/activate
+
 ```
 
 #### Installer les Dépendances Python
