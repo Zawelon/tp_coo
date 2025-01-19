@@ -14,6 +14,9 @@
 ---
 ## Description
 Ce projet vise à simuler la gestion des usines de production de crayon en utilisant Django pour la partie serveur et C++ pour la partie client.
+### Partie conception
+Voici le plan de conception:
+![image](https://github.com/user-attachments/assets/a8885d7b-0752-4aea-8349-5dc554907383)
 
 ---
 
